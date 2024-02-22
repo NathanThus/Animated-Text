@@ -27,7 +27,9 @@ public class TextMeshAnimator : MonoBehaviour
     private void Update()
     {
         GatherData();
+        VerticePerWord();
         ColorPerWord();
+        SetMeshProperties();
     }
 
     protected void GatherData()
@@ -65,7 +67,6 @@ public class TextMeshAnimator : MonoBehaviour
             }
         }
 
-        SetVerticies();
     }
 
     protected void VerticePerWord()
@@ -88,7 +89,6 @@ public class TextMeshAnimator : MonoBehaviour
             }
         }
         
-        SetVerticies();
     }
 
     protected void ColorPerWord()
@@ -110,7 +110,6 @@ public class TextMeshAnimator : MonoBehaviour
                 }
             }
         }
-        SetColors(); 
     }
 
     protected void VerticePerMesh()
@@ -121,35 +120,21 @@ public class TextMeshAnimator : MonoBehaviour
             _verticies[i] += offset;
         }
 
-        SetVerticies();
     }
 
     /// <summary>
     /// Call this after every modification of the verticies.
     /// </summary>
-    protected void SetVerticies()
-    {
-        _mesh.vertices = _verticies;
-        _textMesh.canvasRenderer.SetMesh(_mesh);
-    }
 
-    protected void SetColors()
+    protected void SetMeshProperties()
     {
         _mesh.colors = _colors;
+        _mesh.vertices = _verticies;
         _textMesh.canvasRenderer.SetMesh(_mesh);
     }
 
     private Vector2 Wobble(float time)
     {
         return new Vector2(MathF.Sin(time * _horizontalWobble), Mathf.Cos(time * _verticalWobble));
-    }
-
-    /// <summary>
-    /// Override This :)
-    /// </summary>
-    /// <returns>The offset to apply to the vertice in question.</returns>
-    protected Vector3 TranslateVertice()
-    {
-        return Vector3.zero;
     }
 }
