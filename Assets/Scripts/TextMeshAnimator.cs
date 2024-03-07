@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 [RequireComponent(typeof(TMP_Text))]
 public class TextMeshAnimator : MonoBehaviour
@@ -9,12 +10,16 @@ public class TextMeshAnimator : MonoBehaviour
     [SerializeField] protected float _horizontalWobble = 3.3f;
     [SerializeField] protected float _verticalWobble = 0.8f;
     [SerializeField] protected Gradient _rainbow;
+    [SerializeField] protected List<int> _words;
     protected TMP_Text _textMesh;
     protected Mesh _mesh;
     protected Vector3[] _verticies;
     protected List<int> _wordLengths = new();
     protected List<int> _wordIndexes= new(){0};
     protected Color[] _colors;
+
+    private string _regex = "<[a-zA-Z]+>";
+    RegexOptions _regexOptions = RegexOptions.Multiline;
 
     const int VerticeCount = 4;
     // Start is called before the first frame update
@@ -50,7 +55,18 @@ public class TextMeshAnimator : MonoBehaviour
             _wordLengths.Add(i - _wordIndexes[_wordIndexes.Count -1]);
             _wordIndexes.Add(i + 1);
         }
+
         _wordLengths.Add(text.Length - _wordIndexes[_wordIndexes.Count - 1]);
+
+        for (int i = 0; i < _wordIndexes.Count; i++)
+        {
+            string testString = text.Substring(_wordIndexes[i], _wordLengths[i]);
+            if(Regex.IsMatch(testString, _regex))
+            {
+                _words.Add(i);
+            }
+                
+        }
     }
 
     protected void VerticePerLetter()
@@ -66,13 +82,17 @@ public class TextMeshAnimator : MonoBehaviour
                 _verticies[index + j] += offset;
             }
         }
-
     }
 
     protected void VerticePerWord()
     {
         for (int w = 0; w < _wordIndexes.Count; w++)
         {
+            if(!_words.Contains(w))
+            {
+                continue;
+            }
+
             int word = _wordIndexes[w];
             Vector3 offset = Wobble(Time.time + w);
 
@@ -88,7 +108,6 @@ public class TextMeshAnimator : MonoBehaviour
                 }
             }
         }
-        
     }
 
     protected void ColorPerWord()
@@ -97,6 +116,11 @@ public class TextMeshAnimator : MonoBehaviour
 
         for (int w = 0; w < _wordIndexes.Count; w++)
         {
+            if(!_words.Contains(w))
+            {
+                continue;
+            }
+
             int word = _wordIndexes[w];
 
             for (var i = 0; i < _wordLengths[w]; i++)
