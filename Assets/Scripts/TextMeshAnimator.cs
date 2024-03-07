@@ -18,7 +18,7 @@ public class TextMeshAnimator : MonoBehaviour
     protected List<int> _wordIndexes= new(){0};
     protected Color[] _colors;
 
-    private string _regex = "<[a-zA-Z]+>";
+    private string _regex = "<R>";//"<[a-zA-Z]+>";
     RegexOptions _regexOptions = RegexOptions.Multiline;
 
     const int VerticeCount = 4;
