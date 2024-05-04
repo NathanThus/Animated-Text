@@ -3,36 +3,71 @@ using TMPro;
 using System;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(TMP_Text))]
 public class TextMeshAnimator : MonoBehaviour
 {
+    #region Serialized Fields
+    [SerializeField] private TMP_Text _textMesh;
+
+    [Header("Movement")]
     [SerializeField] protected float _horizontalWobble = 3.3f;
     [SerializeField] protected float _verticalWobble = 0.8f;
-    [SerializeField] protected Gradient _rainbow;
-    protected TMP_Text _textMesh;
+    [SerializeField] private bool _moveVerticePerWord;
+    [SerializeField] private bool _moveVerticePerLetter;
+    [SerializeField] private bool _moveEntireMesh;
+
+    [Header("Colour")]
+    [SerializeField] protected Gradient _gradient;
+    [SerializeField] private bool _useColour;
+
+    #endregion
+
+    #region Fields
+
     protected Mesh _mesh;
     protected Vector3[] _verticies;
     protected List<int> _wordLengths = new();
-    protected List<int> _wordIndexes= new(){0};
+    protected List<int> _wordIndexes = new() { 0 };
     protected Color[] _colors;
 
     const int VerticeCount = 4;
+
+    #endregion
+
+    #region Unity Methods
     // Start is called before the first frame update
     private void Start()
     {
-        _textMesh = GetComponent<TMP_Text>();
         PrepareWords();
     }
 
     private void Update()
     {
+        UpdateText();
+    }
+
+    #endregion
+
+    #region Public
+
+    public void UpdateText()
+    {
         GatherData();
-        VerticePerWord();
-        ColorPerWord();
+
+        if (_moveVerticePerWord) VerticePerWord();
+        if (_moveVerticePerLetter) VerticePerLetter();
+        if (_moveEntireMesh) VerticePerMesh();
+
+        if (_useColour) ColorPerWord();
+        else Array.Fill<Color>(_colors, Color.white);
+
         SetMeshProperties();
     }
 
-    protected void GatherData()
+    #endregion
+
+    #region Private
+
+    private void GatherData()
     {
         _textMesh.ForceMeshUpdate();
         _mesh = _textMesh.mesh;
@@ -42,18 +77,21 @@ public class TextMeshAnimator : MonoBehaviour
     /// <summary>
     /// Prepares the system by separating the words by spacing.
     /// </summary>
-    protected void PrepareWords()
+    private void PrepareWords()
     {
         string text = _textMesh.text;
         for (int i = text.IndexOf(' '); i > -1; i = text.IndexOf(' ', i + 1))
         {
-            _wordLengths.Add(i - _wordIndexes[_wordIndexes.Count -1]);
+            _wordLengths.Add(i - _wordIndexes[_wordIndexes.Count - 1]);
             _wordIndexes.Add(i + 1);
         }
         _wordLengths.Add(text.Length - _wordIndexes[_wordIndexes.Count - 1]);
     }
 
-    protected void VerticePerLetter()
+    /// <summary>
+    /// Changes the vertice of 
+    /// </summary>
+    private void VerticePerLetter()
     {
         for (var i = 0; i < _textMesh.textInfo.characterCount; i++)
         {
@@ -69,7 +107,7 @@ public class TextMeshAnimator : MonoBehaviour
 
     }
 
-    protected void VerticePerWord()
+    private void VerticePerWord()
     {
         for (int w = 0; w < _wordIndexes.Count; w++)
         {
@@ -81,17 +119,17 @@ public class TextMeshAnimator : MonoBehaviour
                 TMP_CharacterInfo characterInfo = _textMesh.textInfo.characterInfo[word + i];
 
                 int vertexIndex = characterInfo.vertexIndex;
-                
+
                 for (int j = 0; j < VerticeCount; j++)
                 {
                     _verticies[vertexIndex + j] += offset;
                 }
             }
         }
-        
+
     }
 
-    protected void ColorPerWord()
+    private void ColorPerWord()
     {
         _colors = _mesh.colors;
 
@@ -106,13 +144,13 @@ public class TextMeshAnimator : MonoBehaviour
 
                 for (int j = 0; j < 4; j++)
                 {
-                    _colors[index + j] = _rainbow.Evaluate(Mathf.Repeat(Time.time + _verticies[index + j].x*0.001f, 1f));
+                    _colors[index + j] = _gradient.Evaluate(Mathf.Repeat(Time.time + _verticies[index + j].x * 0.001f, 1f));
                 }
             }
         }
     }
 
-    protected void VerticePerMesh()
+    private void VerticePerMesh()
     {
         for (var i = 0; i < _verticies.Length; i++)
         {
@@ -126,7 +164,7 @@ public class TextMeshAnimator : MonoBehaviour
     /// Call this after every modification of the verticies.
     /// </summary>
 
-    protected void SetMeshProperties()
+    private void SetMeshProperties()
     {
         _mesh.colors = _colors;
         _mesh.vertices = _verticies;
@@ -137,4 +175,5 @@ public class TextMeshAnimator : MonoBehaviour
     {
         return new Vector2(MathF.Sin(time * _horizontalWobble), Mathf.Cos(time * _verticalWobble));
     }
+    #endregion
 }
