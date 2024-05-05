@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 public class TextMeshAnimator : MonoBehaviour
 {
@@ -30,6 +31,9 @@ public class TextMeshAnimator : MonoBehaviour
     protected Color[] _colors;
 
     const int VerticeCount = 4;
+
+    const string RegexPattern = ":[a-zA-Z0-9]*:";
+    const RegexOptions RegexOption = RegexOptions.Multiline;
 
     #endregion
 
@@ -89,7 +93,7 @@ public class TextMeshAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// Changes the vertice of 
+    /// Changes the vertice of letters individually.
     /// </summary>
     private void VerticePerLetter()
     {
@@ -107,6 +111,9 @@ public class TextMeshAnimator : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Changes the verticies of the words.
+    /// </summary>
     private void VerticePerWord()
     {
         for (int w = 0; w < _wordIndexes.Count; w++)
@@ -129,6 +136,9 @@ public class TextMeshAnimator : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Colours the words individually.
+    /// </summary>
     private void ColorPerWord()
     {
         _colors = _mesh.colors;
