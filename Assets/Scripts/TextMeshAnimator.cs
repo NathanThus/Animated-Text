@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 public class TextMeshAnimator : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class TextMeshAnimator : MonoBehaviour
     [Header("Movement")]
     [SerializeField] protected float _horizontalWobble = 3.3f;
     [SerializeField] protected float _verticalWobble = 0.8f;
+
     [SerializeField] private bool _moveVerticePerWord;
     [SerializeField] private bool _moveVerticePerLetter;
     [SerializeField] private bool _moveEntireMesh;
@@ -31,6 +33,9 @@ public class TextMeshAnimator : MonoBehaviour
 
     const int VerticeCount = 4;
 
+    const string RegexPattern = ":[a-zA-Z0-9]*:";
+    const RegexOptions DesiredRegexOptions = RegexOptions.Multiline;
+
     #endregion
 
     #region Unity Methods
@@ -49,6 +54,9 @@ public class TextMeshAnimator : MonoBehaviour
 
     #region Public
 
+    /// <summary>
+    /// Updates the text with the desired properties.
+    /// </summary>
     public void UpdateText()
     {
         GatherData();
@@ -61,6 +69,22 @@ public class TextMeshAnimator : MonoBehaviour
         else Array.Fill<Color>(_colors, Color.white);
 
         SetMeshProperties();
+    }
+
+    /// <summary>
+    /// Enables the Monobehaviour.
+    /// </summary>
+    public void Enable()
+    {
+        enabled = true;
+    }
+
+    /// <summary>
+    /// Disables the Monobehaviour.
+    /// </summary>
+    public void Disable()
+    {
+        enabled = false;
     }
 
     #endregion
@@ -79,7 +103,9 @@ public class TextMeshAnimator : MonoBehaviour
     /// </summary>
     private void PrepareWords()
     {
+        if (!PerformEffectDetection()) return;
         string text = _textMesh.text;
+
         for (int i = text.IndexOf(' '); i > -1; i = text.IndexOf(' ', i + 1))
         {
             _wordLengths.Add(i - _wordIndexes[_wordIndexes.Count - 1]);
@@ -88,8 +114,34 @@ public class TextMeshAnimator : MonoBehaviour
         _wordLengths.Add(text.Length - _wordIndexes[_wordIndexes.Count - 1]);
     }
 
+    public bool PerformEffectDetection()
+    {
+        string text = _textMesh.text;
+        MatchCollection matches = Regex.Matches(text, RegexPattern, DesiredRegexOptions);
+
+        if (matches.Count == 0) // If there are no effects, then who cares.
+        {
+            Disable();
+            return false;
+        }
+
+        foreach (Match match in matches)
+        {
+            if (match.Value.Contains(":wave:"))
+            {
+                _moveEntireMesh = true;
+            }
+
+            text = text.Remove(match.Index, match.Length);
+        }
+
+        _textMesh.text = text;
+
+        return true;
+    }
+
     /// <summary>
-    /// Changes the vertice of 
+    /// Changes the vertice of letters individually.
     /// </summary>
     private void VerticePerLetter()
     {
@@ -107,6 +159,9 @@ public class TextMeshAnimator : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Changes the verticies of the words.
+    /// </summary>
     private void VerticePerWord()
     {
         for (int w = 0; w < _wordIndexes.Count; w++)
@@ -129,6 +184,9 @@ public class TextMeshAnimator : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Colours the words individually.
+    /// </summary>
     private void ColorPerWord()
     {
         _colors = _mesh.colors;
