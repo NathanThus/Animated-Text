@@ -70,14 +70,6 @@ namespace TextAnimation
             {
                 _mesh = _animationObj.DoEffect(_mesh);
             }
-            // if (_moveVerticePerWord) VerticePerWord();
-            // if (_moveVerticePerLetter) VerticePerLetter();
-
-            // if (_colors != null)
-            // {
-            //     if (_useColour) ColorPerWord();
-            //     else Array.Fill<Color>(_colors, Color.white);
-            // }
 
             SetMeshProperties();
         }
@@ -150,49 +142,49 @@ namespace TextAnimation
             return true;
         }
 
-        /// <summary>
-        /// Changes the vertice of letters individually.
-        /// </summary>
-        private void VerticePerLetter()
-        {
-            for (var i = 0; i < _textMesh.textInfo.characterCount; i++)
-            {
-                TMP_CharacterInfo characterInfo = _textMesh.textInfo.characterInfo[i];
-                int index = characterInfo.vertexIndex;
+        // /// <summary>
+        // /// Changes the vertice of letters individually.
+        // /// </summary>
+        // private void VerticePerLetter()
+        // {
+        //     for (var i = 0; i < _textMesh.textInfo.characterCount; i++)
+        //     {
+        //         TMP_CharacterInfo characterInfo = _textMesh.textInfo.characterInfo[i];
+        //         int index = characterInfo.vertexIndex;
 
-                Vector3 offset = Wobble(Time.time + i);
-                for (var j = 0; j < VerticeCount; j++)
-                {
-                    _verticies[index + j] += offset;
-                }
-            }
+        //         Vector3 offset = Wobble(Time.time + i);
+        //         for (var j = 0; j < VerticeCount; j++)
+        //         {
+        //             _verticies[index + j] += offset;
+        //         }
+        //     }
 
-        }
+        // }
 
-        /// <summary>
-        /// Changes the verticies of the words.
-        /// </summary>
-        private void VerticePerWord()
-        {
-            for (int w = 0; w < _wordIndexes.Count; w++)
-            {
-                int word = _wordIndexes[w];
-                Vector3 offset = Wobble(Time.time + w);
+        // /// <summary>
+        // /// Changes the verticies of the words.
+        // /// </summary>
+        // private void VerticePerWord()
+        // {
+        //     for (int w = 0; w < _wordIndexes.Count; w++)
+        //     {
+        //         int word = _wordIndexes[w];
+        //         Vector3 offset = Wobble(Time.time + w);
 
-                for (var i = 0; i < _wordLengths[w]; i++)
-                {
-                    TMP_CharacterInfo characterInfo = _textMesh.textInfo.characterInfo[word + i];
+        //         for (var i = 0; i < _wordLengths[w]; i++)
+        //         {
+        //             TMP_CharacterInfo characterInfo = _textMesh.textInfo.characterInfo[word + i];
 
-                    int vertexIndex = characterInfo.vertexIndex;
+        //             int vertexIndex = characterInfo.vertexIndex;
 
-                    for (int j = 0; j < VerticeCount; j++)
-                    {
-                        _verticies[vertexIndex + j] += offset;
-                    }
-                }
-            }
+        //             for (int j = 0; j < VerticeCount; j++)
+        //             {
+        //                 _verticies[vertexIndex + j] += offset;
+        //             }
+        //         }
+        //     }
 
-        }
+        // }
 
         /// <summary>
         /// Colours the words individually.
@@ -218,29 +210,14 @@ namespace TextAnimation
             }
         }
 
-        private void VerticePerMesh()
-        {
-            for (var i = 0; i < _verticies.Length; i++)
-            {
-                Vector3 offset = Wobble(Time.time + i);
-                _verticies[i] += offset;
-            }
-        }
-
         /// <summary>
         /// Call this after every modification of the verticies.
         /// </summary>
         private void SetMeshProperties()
         {
-            _mesh.colors = _colors;
-            // _mesh.vertices = _verticies; // REWIND THIS IF IT FUCKS UP
             _textMesh.canvasRenderer.SetMesh(_mesh);
         }
 
-        private Vector2 Wobble(float time)
-        {
-            return new Vector2(MathF.Sin(time * _horizontalWobble), Mathf.Cos(time * _verticalWobble));
-        }
         #endregion
     }
 }

@@ -23,7 +23,7 @@ MonoBehaviour:
   _scalingPair:
     _minimum: {x: 0, y: 0, z: 0}
     _maximum: {x: 0, y: 0, z: 0}
-  _color: {r: 0, g: 0, b: 0, a: 0}
+  _color: {r: 1, g: 0, b: 0, a: 1}
   _gradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
