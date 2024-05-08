@@ -24,7 +24,7 @@ namespace TextAnimation
         [SerializeField] protected Gradient _gradient;
         [SerializeField] private bool _useColour;
 
-        [SerializeField] private TranslationAnimationValues _animationObj;
+        [SerializeField] private AnimationScriptableObject _animationObj;
 
         #endregion
 
@@ -137,7 +137,7 @@ namespace TextAnimation
 
             foreach (Match match in matches)
             {
-                if (match.Value.Contains(":z:"))
+                if (match.Value.Contains(":wave:"))
                 {
                     _moveEntireMesh = true;
                 }

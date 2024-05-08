@@ -323,7 +323,7 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   _useColour: 0
-  _animationObj: {fileID: 11400000, guid: dc5c27e7ddec73141b48e8927f4fe549, type: 2}
+  _animationObj: {fileID: 11400000, guid: 0ee3b34cabc8704478d166f5f9ac04fc, type: 2}
 --- !u!4 &316641667
 Transform:
   m_ObjectHideFlags: 0
