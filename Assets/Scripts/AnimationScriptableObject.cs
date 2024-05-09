@@ -4,14 +4,13 @@ using UnityEngine;
 namespace TextAnimation
 {
 
-    [CreateAssetMenu(fileName = "AnimationScriptableObject", menuName = "TextAnimation/Animation ScriptableObject", order = 1)]
+    [CreateAssetMenu(fileName = nameof(AnimationScriptableObject), menuName = "TextAnimation/" + nameof(AnimationScriptableObject), order = 1)]
     internal class AnimationScriptableObject : ScriptableObject
     {
         #region Serialized Fields
         [Header("== Identifier == ")]
-        public string _identifier;
-        [Header("== Settings ==")]
-        [SerializeField] private bool _singleUse;
+        [SerializeField] private string _identifier;
+        [SerializeField] private string _description;
 
         [Header("== Animation Data ==")]
         [SerializeField] private VectorPair _translationPair;
@@ -26,13 +25,16 @@ namespace TextAnimation
 
         #region Properties
 
+        internal string Identifier => _identifier;
+        internal string Description => _description;
+
         internal VectorPair TranslationPair => _translationPair;
         internal VectorPair RotationPair => _rotationPair;
         internal VectorPair ScalingPair => _scalingPair;
 
         internal Color Color => _color;
         internal Gradient Gradient => _gradient;
-        
+
 
         #endregion
 
@@ -44,10 +46,12 @@ namespace TextAnimation
         /// <returns>The modified mesh.</returns>
         internal virtual Mesh DoEffect(Mesh mesh)
         {
-            return ColourByWhole(ExampleMethod(mesh));
+            return ApplyGradient(ExampleMethod(mesh));
         }
 
         #endregion
+
+        // These are all examples, will need to be sorted later.
 
         #region Private
 
@@ -61,12 +65,25 @@ namespace TextAnimation
             mesh.vertices = newVertices;
             return mesh;
         }
-        
+
         private Mesh ColourByWhole(Mesh mesh)
         {
             Color[] colors = mesh.colors;
-            Array.Fill<Color>(colors,_color);
+            Array.Fill<Color>(colors, _color);
             mesh.colors = colors;
+            return mesh;
+        }
+
+        private Mesh ApplyGradient(Mesh mesh)
+        {
+            Color[] newColors = mesh.colors;
+
+            for (int i = 0; i < newColors.Length; i++)
+            {
+                newColors[i] = _gradient.Evaluate(Mathf.Repeat(Time.time + mesh.vertices[i].x * 0.001f, 1f));
+            }
+
+            mesh.colors = newColors;
             return mesh;
         }
 
