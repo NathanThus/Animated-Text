@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 833899fb390360848953a04f24d109f0, type: 3}
-  m_Name: StaticColourRed
+  m_Name: StaticColorYellow
   m_EditorClassIdentifier: 
-  _identifier: ':red:'
-  _description: Makes the text red.
+  _identifier: ':yellow:'
+  _description: Makes the text yellow.
   _animationType: 0
   _translationPair:
     _minimum: {x: 0, y: 0, z: 0}
@@ -24,7 +24,7 @@ MonoBehaviour:
   _scalingPair:
     _minimum: {x: 0, y: 0, z: 0}
     _maximum: {x: 0, y: 0, z: 0}
-  _color: {r: 1, g: 0, b: 0, a: 1}
+  _color: {r: 1, g: 1, b: 0, a: 1}
   _gradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}

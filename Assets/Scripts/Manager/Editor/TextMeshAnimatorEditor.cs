@@ -25,7 +25,6 @@ public class TextMeshAnimatorEditor : Editor
     private void GetAllAnimations()
     {
         var foundAssets = AssetDatabase.FindAssets("t:BaseAnimationObject");
-        Debug.Log(foundAssets.Length);
         if (foundAssets.Length == 0) throw new FileNotFoundException("No Animations were found!");
 
         List<BaseAnimationObject> animations = new();
