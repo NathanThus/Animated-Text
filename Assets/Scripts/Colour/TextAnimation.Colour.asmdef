@@ -1,0 +1,17 @@
+{
+    "name": "TextAnimation.Colour",
+    "rootNamespace": "TextAnimation.Colour",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:90b4388cf832f3d4eb31dfe5e7daa925"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

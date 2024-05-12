@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
+using TextAnimation.Common;
 
-namespace TextAnimation
+namespace TextAnimation.Movement
 {
 
-    [CreateAssetMenu(fileName = nameof(TextAnimation.WobbleAnimation), menuName = "TextAnimation/Movement/" + nameof(TextAnimation.WobbleAnimation), order = 1)]
+    [CreateAssetMenu(fileName = nameof(WobbleAnimation), menuName = "TextAnimation/Movement/" + nameof(WobbleAnimation), order = 1)]
     internal class WobbleAnimation : BaseAnimationObject
     {
         #region Internal
@@ -13,7 +14,7 @@ namespace TextAnimation
         /// </summary>
         /// <param name="mesh">The mesh that will be given to modify.</param>
         /// <returns>The modified mesh.</returns>
-        internal override Mesh DoEffect(Mesh mesh)
+        public override Mesh DoEffect(Mesh mesh)
         {
             return WobbleAnimation(mesh);
         }

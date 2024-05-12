@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
+using TextAnimation.Common;
 
-namespace TextAnimation
+namespace TextAnimation.Colour
 {
 
     [CreateAssetMenu(fileName = nameof(StaticColorAnimation), menuName = "TextAnimation/Colour/" + nameof(StaticColorAnimation), order = 1)]
@@ -13,7 +14,7 @@ namespace TextAnimation
         /// </summary>
         /// <param name="mesh">The mesh that will be given to modify.</param>
         /// <returns>The modified mesh.</returns>
-        internal override Mesh DoEffect(Mesh mesh)
+        public override Mesh DoEffect(Mesh mesh)
         {
             return ColourByWhole(mesh);
         }

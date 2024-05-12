@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
+using TextAnimation.Common;
 
-namespace TextAnimation
+namespace TextAnimation.Movement
 {
 
-    [CreateAssetMenu(fileName = nameof(TemplateAnimation), menuName = "TextAnimation/Unfiltered/" + nameof(TemplateAnimation), order = 1)]
-    internal class TemplateAnimation : BaseAnimationObject
+    [CreateAssetMenu(fileName = nameof(WaveAnimation), menuName = "TextAnimation/Movement/" + nameof(WaveAnimation), order = 1)]
+    internal class WaveAnimation : BaseAnimationObject
     {
         #region Internal
         /// <summary>
@@ -13,9 +14,9 @@ namespace TextAnimation
         /// </summary>
         /// <param name="mesh">The mesh that will be given to modify.</param>
         /// <returns>The modified mesh.</returns>
-        internal override Mesh DoEffect(Mesh mesh)
+        public override Mesh DoEffect(Mesh mesh)
         {
-            return mesh; // Currently, does
+            return WaveAnimation(mesh);
         }
 
         #endregion

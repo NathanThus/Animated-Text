@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TextAnimation
+namespace TextAnimation.Common
 {
     [Serializable]
     public struct VectorPair
