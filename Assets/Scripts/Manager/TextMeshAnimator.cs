@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System;
+using TextAnimation.Common;
 
 namespace TextAnimation
 {

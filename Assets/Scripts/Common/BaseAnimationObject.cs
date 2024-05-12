@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-namespace TextAnimation
+namespace TextAnimation.Common
 {
-    internal class BaseAnimationObject : ScriptableObject
+    public class BaseAnimationObject : ScriptableObject
     {
         #region Serialized Fields
         [Header("== Identifier == ")]
@@ -18,34 +18,33 @@ namespace TextAnimation
 
         [Header("== Colour Data == ")]
         [SerializeField]
-        private Color _color = Color.white
-        ;
+        private Color _color = Color.white;
         [SerializeField] private Gradient _gradient;
 
         #endregion
 
         #region Properties
 
-        internal string Identifier => _identifier;
-        internal string Description => _description;
+        public string Identifier => _identifier;
+        public string Description => _description;
 
-        internal VectorPair TranslationPair => _translationPair;
-        internal VectorPair RotationPair => _rotationPair;
-        internal VectorPair ScalingPair => _scalingPair;
+        public VectorPair TranslationPair => _translationPair;
+        public VectorPair RotationPair => _rotationPair;
+        public VectorPair ScalingPair => _scalingPair;
 
-        internal Color Color => _color;
-        internal Gradient Gradient => _gradient;
+        public Color Color => _color;
+        public Gradient Gradient => _gradient;
 
 
         #endregion
 
-        #region Internal
+        #region Public
         /// <summary>
         /// The method to override, when creating your own implementation.
         /// </summary>
         /// <param name="mesh">The mesh that will be given to modify.</param>
         /// <returns>The modified mesh.</returns>
-        internal virtual Mesh DoEffect(Mesh mesh)
+        public virtual Mesh DoEffect(Mesh mesh)
         {
             return mesh;
         }

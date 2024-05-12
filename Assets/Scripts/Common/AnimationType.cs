@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TextAnimation
+namespace TextAnimation.Common
 {
     public enum AnimationType
     {
