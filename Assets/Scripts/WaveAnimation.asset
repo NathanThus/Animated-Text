@@ -17,7 +17,7 @@ MonoBehaviour:
   _animationType: 1
   _translationPair:
     _minimum: {x: 0, y: 0, z: 0}
-    _maximum: {x: 0, y: 2, z: 0}
+    _maximum: {x: 100, y: 10, z: 0}
   _rotationPair:
     _minimum: {x: 0, y: 0, z: 0}
     _maximum: {x: 0, y: 0, z: 0}

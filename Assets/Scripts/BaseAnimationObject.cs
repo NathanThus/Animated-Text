@@ -58,13 +58,13 @@ namespace TextAnimation
         protected Mesh WaveAnimation(Mesh mesh)
         {
             Vector3[] newVertices = mesh.vertices;
-
-            for (var i = 0; i < newVertices.Length; i += 4)
+            float currentTime = Time.time;
+            for (var i = 0; i < newVertices.Length / 4; i++)
             {
-                Vector3 coords = Wave(Time.time + i, TranslationPair.Maximum.y);
-                for (var j = 0; j < 4; j++)
+                Vector3 Coordinates = Wave(currentTime + (i * TranslationPair.Maximum.x), TranslationPair.Maximum.y);
+                for (int j = 0; j < 4; j++)
                 {
-                    newVertices[i + j] += coords;
+                    newVertices[i*4+j] += Coordinates;
                 }
             }
 
