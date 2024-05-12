@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StaticColourPurple
   m_EditorClassIdentifier: 
   _identifier: ':purple:'
-  _description: 
+  _description: Makes the text purple.
   _animationType: 0
   _translationPair:
     _minimum: {x: 0, y: 0, z: 0}
