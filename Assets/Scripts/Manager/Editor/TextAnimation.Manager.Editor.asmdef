@@ -1,0 +1,18 @@
+{
+    "name": "TextAnimation.Manager.Editor",
+    "rootNamespace": "TextAnimation.Manager.Editor",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:8bdb8b56d7e87b2479b6fcdf6feed278",
+        "GUID:90b4388cf832f3d4eb31dfe5e7daa925"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

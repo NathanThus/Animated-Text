@@ -180,7 +180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: :rainbow:Hello!
+  m_text: :green:Hello!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ec26699e2640b05459a7ac43b819362b, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: ec26699e2640b05459a7ac43b819362b, type: 2}
@@ -288,11 +288,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _textMesh: {fileID: 60870737}
   _availableAnimations:
-  - {fileID: 11400000, guid: d4bbd62106fd1fb40841c0c51fb1c742, type: 2}
-  - {fileID: 11400000, guid: ce3adad09a57c174198dfed8cea255d7, type: 2}
+  - {fileID: 11400000, guid: e23a68e25158ef246b7df51adead252d, type: 2}
+  - {fileID: 11400000, guid: 7ac5046025e1e074f97dba41c5e4e86e, type: 2}
   - {fileID: 11400000, guid: 6f4b3dd4f36295244a90cc07bc255c4b, type: 2}
   - {fileID: 11400000, guid: 13e7ee56902310047bba59acf63d0f87, type: 2}
-  - {fileID: 11400000, guid: e23a68e25158ef246b7df51adead252d, type: 2}
+  - {fileID: 11400000, guid: ce3adad09a57c174198dfed8cea255d7, type: 2}
+  - {fileID: 11400000, guid: d4bbd62106fd1fb40841c0c51fb1c742, type: 2}
   _selectedAnimations: []
 --- !u!4 &316641667
 Transform:

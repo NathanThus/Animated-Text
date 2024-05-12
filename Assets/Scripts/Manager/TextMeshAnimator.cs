@@ -3,6 +3,7 @@ using TMPro;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TextAnimation.Common;
+using System;
 
 namespace TextAnimation
 {
@@ -72,6 +73,17 @@ namespace TextAnimation
         public void Disable()
         {
             enabled = false;
+        }
+
+        public void UpdateAnimationList(List<BaseAnimationObject> animationList)
+        {
+            if(animationList == null) throw new ArgumentNullException(nameof(animationList));
+            _availableAnimations.Clear();
+
+            foreach (var item in animationList)
+            {
+                _availableAnimations.Add(item);
+            }
         }
 
         #endregion
