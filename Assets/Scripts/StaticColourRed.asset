@@ -9,22 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f684784839b8cb448b30b517f4050a0a, type: 3}
-  m_Name: WaveAnimation
+  m_Script: {fileID: 11500000, guid: 833899fb390360848953a04f24d109f0, type: 3}
+  m_Name: StaticColourRed
   m_EditorClassIdentifier: 
-  _identifier: ':wave:'
+  _identifier: ':red:'
   _description: 
-  _animationType: 1
+  _animationType: 0
   _translationPair:
     _minimum: {x: 0, y: 0, z: 0}
-    _maximum: {x: 100, y: 10, z: 0}
+    _maximum: {x: 0, y: 0, z: 0}
   _rotationPair:
     _minimum: {x: 0, y: 0, z: 0}
     _maximum: {x: 0, y: 0, z: 0}
   _scalingPair:
     _minimum: {x: 0, y: 0, z: 0}
     _maximum: {x: 0, y: 0, z: 0}
-  _color: {r: 1, g: 1, b: 1, a: 1}
+  _color: {r: 1, g: 0, b: 0, a: 1}
   _gradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}

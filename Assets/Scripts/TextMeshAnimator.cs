@@ -1,8 +1,8 @@
 using UnityEngine;
 using TMPro;
-using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System;
 
 namespace TextAnimation
 {
@@ -11,32 +11,16 @@ namespace TextAnimation
         #region Serialized Fields
         [Header("Target")]
         [SerializeField] private TMP_Text _textMesh;
-
-        [Header("Wobble")]
-        [SerializeField] protected float _horizontalWobble = 3.3f;
-        [SerializeField] protected float _verticalWobble = 0.8f;
-
-        [SerializeField] private bool _moveVerticePerWord;
-        [SerializeField] private bool _moveVerticePerLetter;
-        [SerializeField] private bool _moveEntireMesh;
-
-        [Header("Colour")]
-        [SerializeField] protected Gradient _gradient;
-        [SerializeField] private bool _useColour;
-
-        [SerializeField] private AnimationScriptableObject _animationObj;
+        [SerializeField] private List<BaseAnimationObject> _availableAnimations;
+        [SerializeField] private List<BaseAnimationObject> _selectedAnimations;
 
         #endregion
 
         #region Fields
 
         protected Mesh _mesh;
-        protected Vector3[] _verticies;
         protected List<int> _wordLengths = new();
         protected List<int> _wordIndexes = new() { 0 };
-        protected Color[] _colors;
-
-        const int VerticeCount = 4;
 
         const string RegexPattern = ":[a-zA-Z0-9]*:";
         const RegexOptions DesiredRegexOptions = RegexOptions.Multiline;
@@ -65,10 +49,10 @@ namespace TextAnimation
         public void UpdateText()
         {
             GatherData();
-            
-            if(_moveEntireMesh)
+
+            foreach (BaseAnimationObject anim in _selectedAnimations)
             {
-                _mesh = _animationObj.DoEffect(_mesh);
+                _mesh = anim.DoEffect(_mesh);
             }
 
             SetMeshProperties();
@@ -129,85 +113,24 @@ namespace TextAnimation
 
             foreach (Match match in matches)
             {
-                if (match.Value.Contains(":wave:"))
+                BaseAnimationObject animation = _availableAnimations.Find(anim => match.Value == anim.Identifier);
+
+                if (animation != null)
                 {
-                    _moveEntireMesh = true;
+                    _selectedAnimations.Add(animation);
                 }
 
-                text = text.Remove(match.Index, match.Length);
+                text = text.Remove(text.IndexOf(match.Value), match.Length);
             }
 
             _textMesh.text = text;
+            if (_selectedAnimations.Count == 0)
+            {
+                Disable();
+                return false;
+            }
 
             return true;
-        }
-
-        // /// <summary>
-        // /// Changes the vertice of letters individually.
-        // /// </summary>
-        // private void VerticePerLetter()
-        // {
-        //     for (var i = 0; i < _textMesh.textInfo.characterCount; i++)
-        //     {
-        //         TMP_CharacterInfo characterInfo = _textMesh.textInfo.characterInfo[i];
-        //         int index = characterInfo.vertexIndex;
-
-        //         Vector3 offset = Wobble(Time.time + i);
-        //         for (var j = 0; j < VerticeCount; j++)
-        //         {
-        //             _verticies[index + j] += offset;
-        //         }
-        //     }
-
-        // }
-
-        // /// <summary>
-        // /// Changes the verticies of the words.
-        // /// </summary>
-        // private void VerticePerWord()
-        // {
-        //     for (int w = 0; w < _wordIndexes.Count; w++)
-        //     {
-        //         int word = _wordIndexes[w];
-        //         Vector3 offset = Wobble(Time.time + w);
-
-        //         for (var i = 0; i < _wordLengths[w]; i++)
-        //         {
-        //             TMP_CharacterInfo characterInfo = _textMesh.textInfo.characterInfo[word + i];
-
-        //             int vertexIndex = characterInfo.vertexIndex;
-
-        //             for (int j = 0; j < VerticeCount; j++)
-        //             {
-        //                 _verticies[vertexIndex + j] += offset;
-        //             }
-        //         }
-        //     }
-
-        // }
-
-        /// <summary>
-        /// Colours the words individually.
-        /// </summary>s
-        private void ColorPerWord()
-        {
-            _colors = _mesh.colors;
-
-            for (int w = 0; w < _wordIndexes.Count; w++)
-            {
-                int word = _wordIndexes[w];
-
-                for (var i = 0; i < _wordLengths[w]; i++)
-                {
-                    TMP_CharacterInfo characterInfo = _textMesh.textInfo.characterInfo[word + i];
-                    int index = characterInfo.vertexIndex;
-
-                    for (int j = 0; j < 4; j++)
-                    {
-                        _colors[index + j] = _gradient.Evaluate(Mathf.Repeat(Time.time + _verticies[index + j].x * 0.001f, 1f));
-                    }
-                }
-            }
         }
 
         /// <summary>

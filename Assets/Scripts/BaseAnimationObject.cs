@@ -3,14 +3,13 @@ using UnityEngine;
 
 namespace TextAnimation
 {
-
-    [CreateAssetMenu(fileName = nameof(AnimationScriptableObject), menuName = "TextAnimation/" + nameof(AnimationScriptableObject), order = 1)]
-    internal class AnimationScriptableObject : ScriptableObject
+    internal class BaseAnimationObject : ScriptableObject
     {
         #region Serialized Fields
         [Header("== Identifier == ")]
         [SerializeField] private string _identifier;
         [SerializeField] private string _description;
+        [SerializeField] private AnimationType _animationType;
 
         [Header("== Animation Data ==")]
         [SerializeField] private VectorPair _translationPair;
@@ -18,7 +17,9 @@ namespace TextAnimation
         [SerializeField] private VectorPair _scalingPair;
 
         [Header("== Colour Data == ")]
-        [SerializeField] private Color _color;
+        [SerializeField]
+        private Color _color = Color.white
+        ;
         [SerializeField] private Gradient _gradient;
 
         #endregion
@@ -46,27 +47,45 @@ namespace TextAnimation
         /// <returns>The modified mesh.</returns>
         internal virtual Mesh DoEffect(Mesh mesh)
         {
-            return ApplyGradient(ExampleMethod(mesh));
+            return mesh;
         }
 
         #endregion
 
+        #region Protected
         // These are all examples, will need to be sorted later.
 
-        #region Private
+        protected Mesh WaveAnimation(Mesh mesh)
+        {
+            Vector3[] newVertices = mesh.vertices;
+            float currentTime = Time.time;
+            for (var i = 0; i < newVertices.Length / 4; i++)
+            {
+                Vector3 Coordinates = Wave(currentTime + (i * TranslationPair.Maximum.x), TranslationPair.Maximum.y);
+                for (int j = 0; j < 4; j++)
+                {
+                    newVertices[i*4+j] += Coordinates;
+                }
+            }
 
-        private Mesh ExampleMethod(Mesh mesh)
+            mesh.vertices = newVertices;
+            return mesh;
+        }
+
+        protected Mesh WobbleAnimation(Mesh mesh)
         {
             Vector3[] newVertices = mesh.vertices;
             for (var i = 0; i < mesh.vertices.Length; i++)
             {
-                newVertices[i] += Wobble(Time.time + i, _translationPair.Maximum.x, _translationPair.Maximum.y);
+                newVertices[i] += Wobble(Time.time + i,
+                                         _translationPair.Maximum.x,
+                                         _translationPair.Maximum.y);
             }
             mesh.vertices = newVertices;
             return mesh;
         }
 
-        private Mesh ColourByWhole(Mesh mesh)
+        protected Mesh ColourByWhole(Mesh mesh)
         {
             Color[] colors = mesh.colors;
             Array.Fill<Color>(colors, _color);
@@ -74,7 +93,7 @@ namespace TextAnimation
             return mesh;
         }
 
-        private Mesh ApplyGradient(Mesh mesh)
+        protected Mesh ApplyGradient(Mesh mesh)
         {
             Color[] newColors = mesh.colors;
 
@@ -87,11 +106,15 @@ namespace TextAnimation
             return mesh;
         }
 
-        private Vector3 Wobble(float time, float amplitudeX, float amplitudeY)
+        protected Vector3 Wobble(float time, float amplitudeX, float amplitudeY)
         {
-            return new Vector3(MathF.Sin(time * amplitudeX), Mathf.Cos(time * amplitudeY));
+            return new Vector3(MathF.Sin(time) * amplitudeX, Mathf.Cos(time) * amplitudeY, 0);
         }
 
+        protected Vector3 Wave(float time, float amplitude)
+        {
+            return new Vector3(0, MathF.Sin(time) * amplitude, 0);
+        }
 
         #endregion
     }
