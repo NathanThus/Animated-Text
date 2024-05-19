@@ -180,7 +180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: :flash3:Hello!
+  m_text: :glow3:Hello!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ec26699e2640b05459a7ac43b819362b, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: ec26699e2640b05459a7ac43b819362b, type: 2}
@@ -289,8 +289,12 @@ MonoBehaviour:
   _textMesh: {fileID: 60870737}
   _availableAnimations:
   - {fileID: 11400000, guid: 52410a707ebddd046bfd753609a94f42, type: 2}
+  - {fileID: 11400000, guid: 6683d9c751da06b438093b9b6f63a836, type: 2}
+  - {fileID: 11400000, guid: f65ab0a4f69f4ee4ab216ee06dbf748a, type: 2}
   - {fileID: 11400000, guid: dff4518b4484380498e9b44aa7421d17, type: 2}
   - {fileID: 11400000, guid: e23a68e25158ef246b7df51adead252d, type: 2}
+  - {fileID: 11400000, guid: 10f5e47f364c06049a5bbe255cedcd10, type: 2}
+  - {fileID: 11400000, guid: 41e630d3991b36a43b721da47a266332, type: 2}
   - {fileID: 11400000, guid: ba191a9aa3aac164fb1972598d882dfe, type: 2}
   - {fileID: 11400000, guid: 2463614eb13eedc45b22afef7661475c, type: 2}
   - {fileID: 11400000, guid: 32c872c646e62a94baf8f5bcac8ba089, type: 2}
