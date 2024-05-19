@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TextAnimation.Common;
 using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace TextAnimation
 {
@@ -14,17 +16,20 @@ namespace TextAnimation
         [SerializeField] private TMP_Text _textMesh;
         [SerializeField] private List<BaseAnimationObject> _availableAnimations;
         [SerializeField] private List<BaseAnimationObject> _selectedAnimations;
+        [SerializeField] private bool _doAnimation = true; // REMOVE: For testing
 
         #endregion
 
         #region Fields
 
         protected Mesh _mesh;
+        protected Mesh _backupMesh;
         protected List<int> _wordLengths = new();
         protected List<int> _wordIndexes = new() { 0 };
 
         const string RegexPattern = ":[a-zA-Z0-9]*:";
         const RegexOptions DesiredRegexOptions = RegexOptions.Multiline;
+        private CancellationTokenSource _cancellationTokenSource;
 
         #endregion
 
@@ -32,12 +37,22 @@ namespace TextAnimation
         // Start is called before the first frame update
         private void Start()
         {
+            _cancellationTokenSource = new CancellationTokenSource();
             PrepareWords();
+            try
+            {
+                UpdateText(_cancellationTokenSource.Token);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Debug.LogError("Animation was cancelled, because the operation was cancelled!\n" + ex.Message);
+            }
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-            UpdateText();
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
         }
 
         #endregion
@@ -47,16 +62,36 @@ namespace TextAnimation
         /// <summary>
         /// Updates the text with the desired properties.
         /// </summary>
-        public void UpdateText()
+        public async void UpdateText(CancellationToken token)
         {
-            GatherData();
-
+            _backupMesh = _mesh;
+            BaseAnimationObject animationDelay = _selectedAnimations[0];
             foreach (BaseAnimationObject anim in _selectedAnimations)
             {
-                _mesh = anim.DoEffect(_mesh);
+                if(anim.AnimationDelaySeconds > animationDelay.AnimationDelaySeconds)
+                {
+                    animationDelay = anim;
+                }
             }
 
-            SetMeshProperties();
+            if(animationDelay.AnimationDelaySeconds == 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(animationDelay),
+                            "Please remember to set a delay, both for performance and to avoid eye strain!");
+            }
+
+            while (_doAnimation)
+            {
+                GatherData();
+
+                foreach (BaseAnimationObject anim in _selectedAnimations)
+                {
+                    _mesh = anim.DoEffect(_mesh);
+                }
+                SetMeshProperties();
+                await UniTask.WaitForSeconds(animationDelay.AnimationDelaySeconds, cancellationToken: token);
+            }
+            _mesh = _backupMesh;
         }
 
         /// <summary>
@@ -77,7 +112,7 @@ namespace TextAnimation
 
         public void UpdateAnimationList(List<BaseAnimationObject> animationList)
         {
-            if(animationList == null) throw new ArgumentNullException(nameof(animationList));
+            if (animationList == null) throw new ArgumentNullException(nameof(animationList));
             _availableAnimations.Clear();
 
             foreach (var item in animationList)
