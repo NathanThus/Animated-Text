@@ -9,22 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b91dd8e2c1f60a4d83845865e9b57fc, type: 3}
-  m_Name: WobbleAnimation
+  m_Script: {fileID: 11500000, guid: d687b9a76d751104880d98029ce07eb9, type: 3}
+  m_Name: WaveHorizontalAnimation
   m_EditorClassIdentifier: 
-  _identifier: ':wobble:'
-  _description: Turns the letters to a gelatin consistency.
-  _animationType: 1
+  _identifier: ':wave2:'
+  _description: Makes the letters oscillate horizontally.
+  _animationType: 0
   _translationPair:
     _minimum: {x: 0, y: 0, z: 0}
-    _maximum: {x: 0, y: 5, z: 0}
+    _maximum: {x: 100, y: 10, z: 0}
   _rotationPair:
     _minimum: {x: 0, y: 0, z: 0}
     _maximum: {x: 0, y: 0, z: 0}
   _scalingPair:
     _minimum: {x: 0, y: 0, z: 0}
     _maximum: {x: 0, y: 0, z: 0}
-  _color: {r: 0, g: 0, b: 0, a: 1}
+  _color: {r: 1, g: 1, b: 1, a: 1}
   _gradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
@@ -55,4 +55,4 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  _animationDelaySeconds: 0.01
+  _animationDelaySeconds: 0.001
