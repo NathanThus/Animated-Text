@@ -21,6 +21,9 @@ namespace TextAnimation.Common
         private Color _color = Color.white;
         [SerializeField] private Gradient _gradient;
 
+        [Header("== Timing Data")]
+        [SerializeField] private float _animationDelaySeconds = 0.05f;
+
         #endregion
 
         #region Properties
@@ -34,6 +37,7 @@ namespace TextAnimation.Common
 
         public Color Color => _color;
         public Gradient Gradient => _gradient;
+        public float AnimationDelaySeconds => _animationDelaySeconds;
 
 
         #endregion
