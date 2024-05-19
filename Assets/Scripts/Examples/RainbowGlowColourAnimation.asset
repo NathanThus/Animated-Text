@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0295a7e0e91b15043a4620ceda3ab190, type: 3}
+  m_Name: RainbowGlowColourAnimation
+  m_EditorClassIdentifier: 
+  _identifier: ':glow1:'
+  _description: Colours the entire text from Red-Orange-Yellow-Green-Cyan.
+  _animationType: 0
+  _translationPair:
+    _minimum: {x: 0, y: 0, z: 0}
+    _maximum: {x: 0, y: 0, z: 0}
+  _rotationPair:
+    _minimum: {x: 0, y: 0, z: 0}
+    _maximum: {x: 0, y: 0, z: 0}
+  _scalingPair:
+    _minimum: {x: 0, y: 0, z: 0}
+    _maximum: {x: 0, y: 0, z: 0}
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0, b: 0, a: 1}
+    key1: {r: 1, g: 0.49019608, b: 0.14117646, a: 1}
+    key2: {r: 1, g: 0.99999994, b: 0, a: 0}
+    key3: {r: 0, g: 1, b: 0, a: 0}
+    key4: {r: 0, g: 1, b: 1, a: 0}
+    key5: {r: 1, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 13107
+    ctime2: 26214
+    ctime3: 39321
+    ctime4: 52428
+    ctime5: 65535
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 6
+    m_NumAlphaKeys: 2
+  _animationDelaySeconds: 0.05
