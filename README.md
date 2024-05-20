@@ -25,6 +25,9 @@ To use the system, create a `TextAnimator` gameobject, and add the `TextMeshAnim
 ### Creating a new animation
 Duplicate the `TemplateAnimation` class, and adjust the code as required. Several animations already exist in the `BaseAnimationObject`, so feel free to peek at both the examples and that class to get started.
 
+#### Important
+The `Regex` used in `TextMeshAnimator` expects the following format: `:XYZ123:`. For example: `:glow3:` or `:rainbow:`. Not using this format (or adjusting the regex yourself) will lead to issues.
+
 You can always add more `SerializedFields` to the animation class, as it only cares for the `DoEffect(Mesh mesh)` function. Make sure to override the function with your own implementation, returning the newly modified mesh.
 
 Several fields have already been provided, and act more akin to a guideline than a hard list of properties.
