@@ -15,12 +15,8 @@ namespace TextAnimation.Common
         /// <returns>The modified mesh.</returns>
         public override Mesh DoEffect(Mesh mesh)
         {
-            return mesh; // Currently, does
+            return mesh; // Please replace this with your own implementation!
         }
-
-        #endregion
-
-        #region Private
 
         #endregion
     }
