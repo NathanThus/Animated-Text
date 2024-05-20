@@ -11,105 +11,203 @@ namespace TextAnimation
 {
     public class TextMeshAnimator : MonoBehaviour
     {
+        #region Nested Entities
+
+        private struct TextAnimationPair
+        {
+            private TMP_Text _textMesh;
+            private List<BaseAnimationObject> _animations;
+            private Mesh _mesh;
+            private float _animationDelaySeconds;
+
+            public readonly TMP_Text TextMesh => _textMesh;
+            public readonly List<BaseAnimationObject> Animations => _animations;
+            public readonly Mesh Mesh => _mesh;
+
+            public readonly float DelaySeconds => _animationDelaySeconds;
+
+            public TextAnimationPair(TMP_Text textMesh, List<BaseAnimationObject> animations)
+            {
+                _textMesh = textMesh;
+                _animations = animations;
+                _mesh = _textMesh.mesh;
+
+                BaseAnimationObject animationDelay = _animations[0];
+                foreach (BaseAnimationObject anim in _animations)
+                {
+                    if (anim.AnimationDelaySeconds > animationDelay.AnimationDelaySeconds)
+                    {
+                        animationDelay = anim;
+                    }
+                }
+
+                if (animationDelay.AnimationDelaySeconds == 0f)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(animationDelay),
+                                "Please remember to set a delay, both for performance and to avoid eye strain!");
+                }
+                _animationDelaySeconds = animationDelay.AnimationDelaySeconds;
+            }
+
+            public void Prepare()
+            {
+                _textMesh.ForceMeshUpdate();
+                _mesh = _textMesh.mesh;
+            }
+
+            /// <summary>
+            /// Call this after every modification of the verticies.
+            /// </summary>
+            public readonly void SetMeshProperties(Mesh mesh)
+            {
+                _textMesh.canvasRenderer.SetMesh(mesh);
+            }
+
+            /// <summary>
+            /// Prepares the struct for garbage collection.
+            /// </summary>
+            public void Kill()
+            {
+                _textMesh = null;
+                _mesh = null;
+                _animations.Clear();
+            }
+        }
+
+        #endregion
+
         #region Serialized Fields
-        [Header("Target")]
-        [SerializeField] private TMP_Text _textMesh;
-        [SerializeField] private List<BaseAnimationObject> _availableAnimations;
-        [SerializeField] private List<BaseAnimationObject> _selectedAnimations;
-        [SerializeField] private bool _doAnimation = true; // REMOVE: For testing
+        [Header("Animations")]
+        [SerializeField] private List<BaseAnimationObject> _availableAnimations;        
 
         #endregion
 
         #region Fields
 
         protected Mesh _mesh;
-        protected Mesh _backupMesh;
         protected List<int> _wordLengths = new();
         protected List<int> _wordIndexes = new() { 0 };
 
+        private List<TextAnimationPair> _textAnimationPairs = new();
+        private bool _doAnimation = true;
+
         const string RegexPattern = ":[a-zA-Z0-9]*:";
         const RegexOptions DesiredRegexOptions = RegexOptions.Multiline;
-        private CancellationTokenSource _cancellationTokenSource;
 
         #endregion
 
         #region Unity Methods
-        // Start is called before the first frame update
-        private void Start()
-        {
-            _cancellationTokenSource = new CancellationTokenSource();
-            PrepareWords();
-            try
-            {
-                UpdateText(_cancellationTokenSource.Token);
-            }
-            catch (OperationCanceledException ex)
-            {
-                Debug.LogError("Animation was cancelled, because the operation was cancelled!\n" + ex.Message);
-            }
-        }
 
         private void OnDestroy()
         {
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource.Dispose();
+            foreach (var item in _textAnimationPairs)
+            {
+                item.Kill();
+            }
         }
 
-        #endregion
+        #endregion 
 
         #region Public
 
         /// <summary>
-        /// Updates the text with the desired properties.
+        /// 
         /// </summary>
         public async void UpdateText(CancellationToken token)
         {
-            _backupMesh = _mesh;
-            BaseAnimationObject animationDelay = _selectedAnimations[0];
-            foreach (BaseAnimationObject anim in _selectedAnimations)
-            {
-                if(anim.AnimationDelaySeconds > animationDelay.AnimationDelaySeconds)
-                {
-                    animationDelay = anim;
-                }
-            }
+            float animationDelay = float.MaxValue;
 
-            if(animationDelay.AnimationDelaySeconds == 0f)
+            foreach (var textAnimation in _textAnimationPairs)
             {
-                throw new ArgumentOutOfRangeException(nameof(animationDelay),
-                            "Please remember to set a delay, both for performance and to avoid eye strain!");
+                if (animationDelay > textAnimation.DelaySeconds)
+                {
+                    animationDelay = textAnimation.DelaySeconds;
+                }
             }
 
             while (_doAnimation)
             {
-                GatherData();
-
-                foreach (BaseAnimationObject anim in _selectedAnimations)
+                foreach (var animationPair in _textAnimationPairs)
                 {
-                    _mesh = anim.DoEffect(_mesh);
+                    animationPair.Prepare();
+                    Mesh animationMesh = animationPair.Mesh;
+                    foreach (var animation in animationPair.Animations)
+                    {
+                        animationMesh = animation.DoEffect(animationMesh);
+                    }
+                    animationPair.SetMeshProperties(animationMesh);
                 }
-                SetMeshProperties();
-                await UniTask.WaitForSeconds(animationDelay.AnimationDelaySeconds, cancellationToken: token);
+                await UniTask.WaitForSeconds(animationDelay, cancellationToken: token);
             }
-            _mesh = _backupMesh;
+
         }
 
         /// <summary>
-        /// Enables the Monobehaviour.
+        /// Creates a new AnimationPair. Creates and prepares an animation pair if successful.
         /// </summary>
-        public void Enable()
+        /// <param name="TMPElement">The TextMeshPro Text element to parse into the pair</param>
+        /// <returns>If any valid animations were found.</returns>
+        public bool CreateAnimationPair(TMP_Text TMPElement)
         {
-            enabled = true;
+            if (DoesElementExist(TMPElement)) return true;
+
+            List<BaseAnimationObject> animations = PerformEffectDetection(TMPElement);
+            if (animations == null ||animations.Count == 0) return false; // No animations detected
+
+            _textAnimationPairs.Add(new TextAnimationPair(TMPElement, animations));
+            return true;
         }
 
         /// <summary>
-        /// Disables the Monobehaviour.
+        /// Disables animations, kills all animation pairs, then clears the list.
         /// </summary>
-        public void Disable()
+        public void KillAllAnimations()
         {
-            enabled = false;
+            DisableAnimations();
+            foreach (var item in _textAnimationPairs)
+            {
+                item.Kill();
+            }
+            _textAnimationPairs.Clear();
         }
 
+        /// <summary>
+        /// Kills a specific element, and readies it for garbage collection.
+        /// </summary>
+        /// <param name="TMPElement">The element to search for.</param>
+        public void KillAnimation(TMP_Text TMPElement)
+        {
+            var animation = _textAnimationPairs.Find(anim => TMPElement == anim.TextMesh);
+
+            if(animation.Equals(default(TextAnimationPair))) return;
+
+            _textAnimationPairs.Remove(animation);
+            animation.Kill();
+        }
+
+        /// <summary>
+        /// Enables all animations.
+        /// </summary>
+        public void EnableAnimations(CancellationToken token)
+        {
+            _doAnimation = true;
+            UpdateText(token);
+        }
+
+        /// <summary>
+        /// Enables all animations (Stops the loop).
+        /// </summary>
+        public void DisableAnimations()
+        {
+            _doAnimation = false;
+        }
+
+        /// <summary>
+        /// Updates the animation list with a new animation. 
+        /// Should not be called, instead only called by the TextMeshAnimatorEditor.
+        /// </summary>
+        /// <param name="animationList">The new animation list</param>
+        /// <exception cref="ArgumentNullException">If the animation list is null.</exception>
         public void UpdateAnimationList(List<BaseAnimationObject> animationList)
         {
             if (animationList == null) throw new ArgumentNullException(nameof(animationList));
@@ -125,38 +223,17 @@ namespace TextAnimation
 
         #region Private
 
-        private void GatherData()
+        public List<BaseAnimationObject> PerformEffectDetection(TMP_Text TMPElement)
         {
-            _textMesh.ForceMeshUpdate();
-            _mesh = _textMesh.mesh;
-        }
-
-        /// <summary>
-        /// Prepares the system by separating the words by spacing.
-        /// </summary>
-        private void PrepareWords()
-        {
-            if (!PerformEffectDetection()) return;
-            string text = _textMesh.text;
-
-            for (int i = text.IndexOf(' '); i > -1; i = text.IndexOf(' ', i + 1))
-            {
-                _wordLengths.Add(i - _wordIndexes[_wordIndexes.Count - 1]);
-                _wordIndexes.Add(i + 1);
-            }
-            _wordLengths.Add(text.Length - _wordIndexes[_wordIndexes.Count - 1]);
-        }
-
-        public bool PerformEffectDetection()
-        {
-            string text = _textMesh.text;
+            string text = TMPElement.text;
             MatchCollection matches = Regex.Matches(text, RegexPattern, DesiredRegexOptions);
 
             if (matches.Count == 0) // If there are no effects, then who cares.
             {
-                Disable();
-                return false;
+                return null;
             }
+
+            List<BaseAnimationObject> animations = new();
 
             foreach (Match match in matches)
             {
@@ -164,28 +241,31 @@ namespace TextAnimation
 
                 if (animation != null)
                 {
-                    _selectedAnimations.Add(animation);
+                    animations.Add(animation);
                 }
 
                 text = text.Remove(text.IndexOf(match.Value), match.Length);
             }
 
-            _textMesh.text = text;
-            if (_selectedAnimations.Count == 0)
+            TMPElement.text = text;
+            if (animations.Count == 0)
             {
-                Disable();
-                return false;
+                return null;
             }
 
-            return true;
+            return animations;
         }
 
-        /// <summary>
-        /// Call this after every modification of the verticies.
-        /// </summary>
-        private void SetMeshProperties()
+        private bool DoesElementExist(TMP_Text TMPElement)
         {
-            _textMesh.canvasRenderer.SetMesh(_mesh);
+            foreach (var textMesh in _textAnimationPairs)
+            {
+                if (textMesh.TextMesh == TMPElement)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         #endregion
