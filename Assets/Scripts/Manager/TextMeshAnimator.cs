@@ -63,9 +63,13 @@ namespace TextAnimation
                 _textMesh.canvasRenderer.SetMesh(mesh);
             }
 
+            /// <summary>
+            /// Prepares the struct for garbage collection.
+            /// </summary>
             public void Kill()
             {
                 _textMesh = null;
+                _mesh = null;
                 _animations.Clear();
             }
         }
@@ -74,7 +78,7 @@ namespace TextAnimation
 
         #region Serialized Fields
         [Header("Animations")]
-        [SerializeField] private List<BaseAnimationObject> _availableAnimations;
+        [SerializeField] private List<BaseAnimationObject> _availableAnimations;        
 
         #endregion
 
@@ -111,6 +115,16 @@ namespace TextAnimation
         /// </summary>
         public async void UpdateText(CancellationToken token)
         {
+            float animationDelay = float.MaxValue;
+
+            foreach (var textAnimation in _textAnimationPairs)
+            {
+                if (animationDelay > textAnimation.DelaySeconds)
+                {
+                    animationDelay = textAnimation.DelaySeconds;
+                }
+            }
+
             while (_doAnimation)
             {
                 foreach (var animationPair in _textAnimationPairs)
@@ -122,8 +136,8 @@ namespace TextAnimation
                         animationMesh = animation.DoEffect(animationMesh);
                     }
                     animationPair.SetMeshProperties(animationMesh);
-                    await UniTask.WaitForSeconds(animationPair.DelaySeconds, cancellationToken: token);
                 }
+                await UniTask.WaitForSeconds(animationDelay, cancellationToken: token);
             }
 
         }
@@ -135,11 +149,40 @@ namespace TextAnimation
         /// <returns>If any valid animations were found.</returns>
         public bool CreateAnimationPair(TMP_Text TMPElement)
         {
+            if (DoesElementExist(TMPElement)) return true;
+
             List<BaseAnimationObject> animations = PerformEffectDetection(TMPElement);
-            if (animations.Count == 0) return false; // No animations detected
+            if (animations == null ||animations.Count == 0) return false; // No animations detected
 
             _textAnimationPairs.Add(new TextAnimationPair(TMPElement, animations));
             return true;
+        }
+
+        /// <summary>
+        /// Disables animations, kills all animation pairs, then clears the list.
+        /// </summary>
+        public void KillAllAnimations()
+        {
+            DisableAnimations();
+            foreach (var item in _textAnimationPairs)
+            {
+                item.Kill();
+            }
+            _textAnimationPairs.Clear();
+        }
+
+        /// <summary>
+        /// Kills a specific element, and readies it for garbage collection.
+        /// </summary>
+        /// <param name="TMPElement">The element to search for.</param>
+        public void KillAnimation(TMP_Text TMPElement)
+        {
+            var animation = _textAnimationPairs.Find(anim => TMPElement == anim.TextMesh);
+
+            if(animation.Equals(default(TextAnimationPair))) return;
+
+            _textAnimationPairs.Remove(animation);
+            animation.Kill();
         }
 
         /// <summary>
@@ -211,6 +254,18 @@ namespace TextAnimation
             }
 
             return animations;
+        }
+
+        private bool DoesElementExist(TMP_Text TMPElement)
+        {
+            foreach (var textMesh in _textAnimationPairs)
+            {
+                if (textMesh.TextMesh == TMPElement)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         #endregion
