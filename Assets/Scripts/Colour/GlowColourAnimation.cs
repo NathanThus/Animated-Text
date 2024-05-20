@@ -22,9 +22,5 @@ namespace TextAnimation.Common
         }
 
         #endregion
-
-        #region Private
-
-        #endregion
     }
 }

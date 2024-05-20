@@ -23,7 +23,7 @@ namespace TextAnimation.Movement
                 Vector3 Coordinates = WaveHorizontal(currentTime + (i * TranslationPair.Maximum.x), TranslationPair.Maximum.y);
                 for (int j = 0; j < 4; j++)
                 {
-                    newVertices[i*4+j] += Coordinates;
+                    newVertices[i * 4 + j] += Coordinates;
                 }
             }
 
@@ -31,14 +31,14 @@ namespace TextAnimation.Movement
             return mesh;
         }
 
+        #endregion
+
+        #region Private
+
         protected Vector3 WaveHorizontal(float time, float amplitude)
         {
             return new Vector3(MathF.Sin(time) * amplitude, 0, 0);
         }
-
-        #endregion
-
-        #region Private
 
         #endregion
     }

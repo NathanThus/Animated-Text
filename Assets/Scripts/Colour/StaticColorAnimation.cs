@@ -23,6 +23,19 @@ namespace TextAnimation.Colour
 
         #region Private
 
+        /// <summary>
+        /// Colour the whole mesh a given colour.
+        /// </summary>
+        /// <param name="mesh">The mesh to modify.</param>
+        /// <returns>The modified mesh.</returns>
+        private Mesh ColourByWhole(Mesh mesh)
+        {
+            Color[] colors = mesh.colors;
+            Array.Fill<Color>(colors, Color);
+            mesh.colors = colors;
+            return mesh;
+        }
+
         #endregion
     }
 }

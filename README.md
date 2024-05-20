@@ -29,6 +29,9 @@ You can always add more `SerializedFields` to the animation class, as it only ca
 
 Several fields have already been provided, and act more akin to a guideline than a hard list of properties.
 
+#### ❗ Important ❗
+The `Regex` used in `TextMeshAnimator` expects the following format: `:XYZ123:`. For example: `:glow3:` or `:rainbow:`. Not using this format (or adjusting the regex yourself) will lead to the animation not being detected properly.
+
 ### Adding the Animation
 Under the `TextMeshAnimator` component, press the `Refresh` button. This will search the asset database for any new animation objects, and add them to the list.
 

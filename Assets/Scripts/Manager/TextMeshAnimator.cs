@@ -111,7 +111,7 @@ namespace TextAnimation
         #region Public
 
         /// <summary>
-        /// 
+        /// Starts the animation Cycle. Called automatically via <b>EnableAnimations</b>.
         /// </summary>
         public async void UpdateText(CancellationToken token)
         {
